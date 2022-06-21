@@ -1,4 +1,5 @@
 .vscode
 *.txt
 bin
-
+player_smart
+main
