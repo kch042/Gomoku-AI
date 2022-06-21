@@ -11,32 +11,36 @@
 #define RANK6 1
 
 /* attack
-# 1e7
+# RANK1
 1*full 5
 
-# 2^5
+# RANK2
 1*full open 4
 
-# 2^4
+# RANK3
 1*half open 4
 1*full open 3
 
-# 2^3
+# RANK4
 1*half open 3
 
-# 2^2
+# RANK5
 1*two
 
-# 1
+# RANK6
 1*one
 */
 
 /* defense (block)
-place at this pos as if i'm the enemy
-gain higher score if the enemy can gain more by placing at this pos.
+# RANK1
+directly block an open four or five
 
-the higher the score (i.e. the more valuable this pos is to the enemy), 
-the more damage i caused by placing at this position.
+# RANK2
+
+# RANK3
+
+# RANK4
+
 */
 
 

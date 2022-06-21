@@ -57,7 +57,7 @@ int count(int i, int j, int color, bool &blocked, int dir[2]) {
 }
 
 // evaluate how good is placing disc at (i, j) for the placer
-int eval_move(int i, int j, int color) {
+int eval_move_attack(int i, int j, int color) {
 	int score = 0;
 
 	bool blocked1 = true, blocked2 = true;
@@ -93,9 +93,59 @@ int eval_move(int i, int j, int color) {
 	return score;
 }
 
+int eval_move_defense(int i, int j, int color) {
+	int opp = (color == BLACK) ? WHITE: BLACK;
+
+	int factor = 1;
+
+	int len1, len2, len;
+	bool blocked1, blocked2;
+
+	int score = 0;
+	for (int k = 0; k < 4; k++) {
+		len1 = count(i, j, opp, blocked1, dir[2*k]);
+		len2 = count(i, j, opp, blocked2, dir[2*k+1]);
+		len = len1 + len2 + 1;  // 1: (i, j)
+
+		// e.g. xoo_ox
+		if (blocked1 && blocked2 && (len < 5)) continue;
+
+		// most urgent.
+		if (len >= 5 || len1 == 4 || len2 == 4 || (len == 4 && !blocked1 && !blocked2)) {
+			score += RANK1;
+			return score;
+		}
+
+		// e.g. _xx_ 
+		//		   x
+		// 		   x
+		//		   _
+		if (!blocked1 && len1 >= 2) factor <<= 1;
+		if (!blocked2 && len2 >= 2) factor <<= 1;
+
+		if (len1 == 3) {
+			score += blocked1 ? RANK5 : RANK4;
+		} else if (len1 == 2) {
+			score += blocked1 ? RANK6 : RANK5;
+		} else if (len1 == 1) {
+			score += blocked1 ? 0 : RANK6;
+		}
+
+		if (len2 == 3) {
+			score += blocked2 ? RANK5 : RANK4;
+		} else if (len2 == 2) {
+			score += blocked2 ? RANK6 : RANK5;
+		} else if (len2 == 1) {
+			score += blocked2 ? 0 : RANK6;
+		}
+	}
+
+	return score * factor;
+}
+
 
 int eval(int i, int j) {
-	return eval_move(i, j, player) + eval_move(i, j, opponent);
+	return eval_move_attack(i, j, player) + eval_move_defense(i, j, player);
 }
 
 int max_search(int alpha, int beta, int depth, int score) {
@@ -164,7 +214,7 @@ void write_valid_spot(std::ofstream& fout) {
 	int v = NEG_INF;
 	int vv;
 
-	int depth = 3;
+	int depth = 2;
 	for (int i = 0; i < SIZE; i++) {
 		for (int j = 0; j < SIZE; j++) {
 			if (board[i][j] == EMPTY) {
