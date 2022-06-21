@@ -3,12 +3,13 @@
 // Heuristic of the value setting is that
 // for example, 1 contigous four is approximately as good as 2 contigous three.
 
-#define RANK1 (int)1e7  // win, don't set INF in case overflow.
-#define RANK2 1<<5
-#define RANK3 1<<4
-#define RANK4 1<<3
-#define RANK5 1<<2
-#define RANK6 1
+#define WIN5 6000000
+#define OPEN4 4800
+#define HALF4 500
+#define OPEN3 500
+#define HALF3 200
+#define OPEN2 50
+#define HALF2 10
 
 /* attack
 # RANK1
