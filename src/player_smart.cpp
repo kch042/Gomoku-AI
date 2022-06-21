@@ -210,30 +210,37 @@ int min_search(int alpha, int beta, int depth, int score) {
 }
 
 void write_valid_spot(std::ofstream& fout) {
-	int beta = INF;
 	int v = NEG_INF;
 	int vv;
+	int delta;
 
-	int depth = 2;
-	for (int i = 0; i < SIZE; i++) {
-		for (int j = 0; j < SIZE; j++) {
-			if (board[i][j] == EMPTY) {
-				board[i][j] = player;
-				
-				vv = min_search(v, beta, depth, eval(i, j));
-				if (vv > v) {
-					fout << i << " " << j << endl;
-					v = vv;
+	fout << 0 << " " << 0 << endl;
+
+	// iterative deepening
+	for (int depth = 0; ; depth++) {
+		cout << "now depth: " << depth << endl;
+
+		for (int i = 0; i < SIZE; i++) {
+			for (int j = 0; j < SIZE; j++) {
+				if (board[i][j] == EMPTY && ((delta = eval(i, j)) > 0)) {
+					board[i][j] = player;
+
+					vv = min_search(v, INF, depth, delta);
+					if (vv > v) {
+						fout << i << " " << j << endl;
+						v = vv;
+
+						// this means must-do
+						// thus no need to search further
+						if (vv >= RANK1)
+							return;
+					}
+
+					board[i][j] = EMPTY;
 				}
-
-				board[i][j] = EMPTY;
 			}
 		}
 	}
-
-
-	//pair<int, int> pos = search();
-	//fout << pos.first << " " << pos.second << endl;
 }
 
 int main(int, char** argv) {
